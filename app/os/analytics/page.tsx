@@ -5,6 +5,8 @@ import { TrafficChart, SourcesChart, DevicesChart } from "@/components/analytics
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function AnalyticsPage() {
   const session = await auth?.getSession();
   if (!session?.data?.session) redirect("/auth/sign-in");
