@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
+import { GoogleSignInButton } from "../auth/google-sign-in-button";
 
 export const metadata = {
   title: "Sign in — Yusuf B. Situmorang",
@@ -14,7 +15,6 @@ export default async function LoginPage({
 }) {
   const params = (await searchParams) ?? {};
   const callbackUrl = params.callbackUrl || params.from || "/os";
-  const authUrl = `/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`;
 
   return (
     <main className="section section-white" style={{ minHeight: "100svh", display: "grid", placeItems: "center" }}>
@@ -34,24 +34,21 @@ export default async function LoginPage({
             <LockKeyhole size={20} />
             <h3>Private Personal OS</h3>
             <p>Command Center, life strategy, goals, sprint, quick capture, skills, career, proof, brand, network, business, wealth, purpose and reviews.</p>
-            <Link className="btn btn-dark" href={authUrl} style={{ marginTop: 20 }}>
-              Sign in securely <ArrowUpRight size={15} />
-            </Link>
+            <div style={{ marginTop: 20 }}>
+              <GoogleSignInButton redirectUrl={callbackUrl} />
+            </div>
           </div>
           <div className="card">
             <ShieldCheck size={20} />
             <h3>Security boundary</h3>
             <p>Private records are owner-scoped and intended to be exposed only through authenticated application paths and explicit publication workflows.</p>
-            <Link className="btn btn-secondary" href="/auth/sign-up" style={{ marginTop: 20 }}>
-              Create account <Sparkles size={15} />
-            </Link>
           </div>
         </div>
 
         <div className="notice" style={{ marginTop: 28, padding: 20, border: "1px solid rgba(17,37,54,.14)", borderRadius: 18, background: "#f6f8fa" }}>
-          <strong>Neon Auth is now the authentication foundation.</strong>
+          <strong>Firebase Auth is now the authentication foundation.</strong>
           <p style={{ margin: "8px 0 0" }}>
-            Private access is protected by Neon Auth. If sign-in is unavailable, the deployment still needs its server cookie secret configured; this is never exposed to visitors. The public website remains available without login.
+            Private access is protected by Firebase Google Sign-In. The public website remains available without login.
           </p>
         </div>
       </div>

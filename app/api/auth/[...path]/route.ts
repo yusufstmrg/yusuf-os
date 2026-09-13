@@ -1,14 +1,11 @@
-import { auth } from "@/lib/auth/server";
+import { NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
 
-const unavailable = () =>
-  new Response("Authentication is not configured for this deployment.", {
-    status: 503,
-    headers: { "content-type": "text/plain; charset=utf-8" },
-  });
+export async function GET() {
+  return NextResponse.json({ message: "Firebase Auth handles routing on the client side" });
+}
 
-const handlers = auth?.handler();
-
-export const GET = handlers?.GET ?? unavailable;
-export const POST = handlers?.POST ?? unavailable;
+export async function POST() {
+  return NextResponse.json({ message: "Firebase Auth handles routing on the client side" });
+}

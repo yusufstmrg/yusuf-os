@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { LogOut, User, Settings, ShieldCheck, MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { logout } from "@/lib/firebase";
 
 export function UserMenu({ user }: { user: { name?: string | null; email: string } }) {
   const [open, setOpen] = useState(false);
@@ -25,9 +26,14 @@ export function UserMenu({ user }: { user: { name?: string | null; email: string
   }, []);
 
   const handleSignOut = async () => {
-    // Implement sign out logic for mock environment
-    router.push("/");
+    try {
+      await logout();
+    } catch (e) {
+      console.error(e);
+      router.push("/");
+    }
   };
+
 
   const initials = (user.name || "Y").slice(0, 2).toUpperCase();
 

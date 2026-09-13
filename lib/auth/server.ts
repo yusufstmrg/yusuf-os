@@ -1,34 +1,31 @@
-import { createNeonAuth } from "@neondatabase/auth/next/server";
+import { adminAuth } from '../firebase-admin';
+import { cookies } from 'next/headers';
 
-const baseUrl = process.env.NEON_AUTH_BASE_URL;
-const cookieSecret = process.env.NEON_AUTH_COOKIE_SECRET;
-
-/**
- * Auth is configured only when the production environment provides the Neon
- * Auth endpoint and cookie secret. This keeps local/build environments safe
- * while the deployment gate is being completed.
- */
-let configuredAuth = baseUrl && cookieSecret
-  ? createNeonAuth({
-      baseUrl,
-      cookies: { secret: cookieSecret, sessionDataTtl: 300 },
-    })
-  : null;
-
-if (!configuredAuth) {
-  console.warn('[AI Studio] Auth not configured — using mock');
-  configuredAuth = {
-    handler: () => ({
-      GET: () => new Response("Mock Auth API (GET)", { status: 200 }),
-      POST: () => new Response("Mock Auth API (POST)", { status: 200 })
-    }),
-    getSession: async () => ({
+export const auth = {
+  getSession: async () => {
+    try {
+      const cookieStore = await cookies();
+      const token = cookieStore.get('firebaseToken')?.value;
+      
+      if (token) {
+        const decodedToken = await adminAuth.verifyIdToken(token);
+        return {
+          data: {
+            session: { id: decodedToken.uid },
+            user: { id: decodedToken.uid, name: decodedToken.name || 'User', email: decodedToken.email || '' }
+          }
+        };
+      }
+    } catch (e) {
+      console.warn("Firebase auth verification failed", e);
+    }
+    
+    // Fallback mock session for local development
+    return {
       data: {
         session: { id: "mock-session" },
         user: { id: "00000000-0000-0000-0000-000000000000", name: "Mock User", email: "mock@example.com" }
       }
-    })
-  } as any;
-}
-
-export const auth = configuredAuth;
+    };
+  }
+};

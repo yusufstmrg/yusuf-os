@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, CircleGauge, Coins, Flag, Layers3, ListChecks, Sparkles, Target, UserRoundCheck } from "lucide-react";
 import { UserMenu } from "@/components/user-menu";
 import { requirePrivateDb } from "@/lib/os/server";
+import { WorkspaceDashboard } from "@/components/workspace-dashboard";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
@@ -68,9 +69,14 @@ export default async function PersonalOsPage() {
           <div className="actions"><Link className="btn btn-dark" href="/os/quick-capture">Quick Capture <ArrowUpRight size={15} /></Link><Link className="btn btn-secondary" href="/os/intelligence">Open intelligence <ArrowUpRight size={15} /></Link></div>
         </article>
         <article className="os-status">
-          <div><span className="kicker">System state</span><strong>Identity verified</strong><p>Neon Auth is active for this session. Private records are always queried with the authenticated owner boundary.</p></div>
+          <div><span className="kicker">System state</span><strong>Identity verified</strong><p>Firebase Auth is active for this session. Private records are always queried with the authenticated owner boundary.</p></div>
           <div className="os-stat-row"><span><small>Personal Value</small><b>{scores[0]?.personal_value ?? "Not measured"}</b></span><span><small>Projects</small><b>{s.projects ?? 0}</b></span></div>
         </article>
+      </section>
+
+      <section style={{ marginTop: 48 }}>
+        <div className="section-head"><div><div className="kicker">Google Workspace</div><h2>Your Digital Life</h2></div><p className="section-lead">Real-time sync of your emails, calendar, tasks and files directly pulled via Google Workspace APIs.</p></div>
+        <WorkspaceDashboard />
       </section>
 
       <section style={{ marginTop: 48 }}>
