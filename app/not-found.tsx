@@ -1,10 +1,8 @@
-export const dynamic = 'force-dynamic';
-
 export default function NotFound() {
   return (
-    <div>
-      <h2>Not Found</h2>
-      <p>Could not find requested resource</p>
-    </div>
-  )
+    <main>
+      <h1>Page not found</h1>
+      <p>The page you requested does not exist.</p>
+    </main>
+  );
 }
