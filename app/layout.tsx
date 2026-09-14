@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Script from "next/script";
-import "@neondatabase/auth-ui/css";
+
 import "./globals.css";
 import "./overrides.css";
-import { Providers } from "./providers";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yusuf-platform.vercel.app";
@@ -32,32 +30,16 @@ const personSchema = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
-      <head>
-        {/* Google Analytics (GA4) - Public Traffic Analysis */}
-        <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-                page_path: window.location.pathname,
-              });
-            `,
-          }}
-        />
-      </head>
+      
       <body>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem("yusuf-theme");if(t!=="light"&&t!=="dark")t="dark";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.dataset.theme="dark";document.documentElement.style.colorScheme="dark";}})()` }} />
-        <Providers>{children}</Providers>
+        <script key={Math.random()} dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem("yusuf-theme");if(t!=="light"&&t!=="dark")t="dark";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.dataset.theme="dark";document.documentElement.style.colorScheme="dark";}})()` }} />
+        
+        {children}
         
         {/* Internal Private OS Analytics Tracker */}
-        <AnalyticsTracker />
+        {/* <AnalyticsTracker /> */}
         
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+        <script key={Math.random()} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
       </body>
     </html>
   );
