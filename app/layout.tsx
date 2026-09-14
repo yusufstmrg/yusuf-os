@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./overrides.css";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yusuf-platform.vercel.app";
 
@@ -38,6 +39,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         
         {/* Internal Private OS Analytics Tracker */}
         {/* <AnalyticsTracker /> */}
+        
+        <SpeedInsights />
         
         <script key={Math.random()} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
       </body>
