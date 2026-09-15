@@ -65,8 +65,13 @@ export const googleSignIn = async (): Promise<{ user: User; accessToken: string 
     cachedAccessToken = credential.accessToken;
     
     // Set a cookie so the server knows we're logged in.
-    const token = await result.user.getIdToken();
-    document.cookie = `firebaseToken=${token}; path=/; max-age=3600; SameSite=Lax; Secure`;
+    const token = await result.user.getIdToken(true);
+    const sessionResponse = await fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+    if (!sessionResponse.ok) throw new Error("Unable to establish a secure session");
 
     return { user: result.user, accessToken: cachedAccessToken };
   } catch (error: any) {
@@ -84,6 +89,6 @@ export const getAccessToken = async (): Promise<string | null> => {
 export const logout = async () => {
   await auth.signOut();
   cachedAccessToken = null;
-  document.cookie = 'firebaseToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-  window.location.href = '/';
+  await fetch("/api/auth/session", { method: "DELETE" });
+  window.location.href = "/";
 };
