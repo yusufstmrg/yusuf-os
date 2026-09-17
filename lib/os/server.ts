@@ -8,8 +8,8 @@ export async function requirePrivateDb(): Promise<{ user: { id: string; name?: s
   console.log("requirePrivateDb auth:", auth ? "exists" : "null/undefined");
   if (!auth) redirect("/login?reason=auth_setup");
   const result = await auth.getSession();
-  const session = result.data?.session;
-  const user = result.data?.user;
+  const session = result?.data?.session;
+  const user = result?.data?.user;
   if (!session || !user) redirect("/login");
   const db = getDb();
   if (!db) redirect("/login?reason=database_setup");

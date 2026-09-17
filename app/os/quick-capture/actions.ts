@@ -13,8 +13,8 @@ export async function createQuickCapture(
   if (!auth) return { ok: false, message: "Authentication is not configured yet." };
 
   const result = await auth.getSession();
-  const session = result.data?.session;
-  const user = result.data?.user;
+  const session = result?.data?.session;
+  const user = result?.data?.user;
   if (!session || !user) return { ok: false, message: "Please sign in again." };
 
   const rawText = String(formData.get("raw_text") ?? "").trim();

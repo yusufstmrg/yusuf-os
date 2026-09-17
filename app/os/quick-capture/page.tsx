@@ -14,11 +14,13 @@ export default async function QuickCapturePage() {
   if (!auth) redirect("/login?reason=auth_setup");
 
   const result = await auth.getSession();
-  if (!result.data?.session) redirect("/auth/sign-in");
+  const session = result?.data?.session;
+  const user = result?.data?.user;
+  if (!session || !user) redirect("/login");
 
   const db = getDb();
   const captures = db
-    ? await db`SELECT id, raw_input, status, processed, created_at FROM public.quick_captures WHERE owner_id=${result.data.user?.id}::uuid ORDER BY created_at DESC LIMIT 8`.catch(() => [])
+    ? await db`SELECT id, raw_input, status, processed, created_at FROM public.quick_captures WHERE owner_id=${user.id}::uuid ORDER BY created_at DESC LIMIT 8`.catch(() => [])
     : [];
 
   return (
