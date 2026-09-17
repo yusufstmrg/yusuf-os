@@ -7,29 +7,11 @@ export const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
 
-// Google Workspace Integration Scopes
-const scopes = [
-  'https://www.googleapis.com/auth/calendar',
-  'https://mail.google.com/',
-  'https://www.googleapis.com/auth/gmail.modify',
-  'https://www.googleapis.com/auth/gmail.compose',
-  'https://www.googleapis.com/auth/gmail.readonly',
-  'https://www.googleapis.com/auth/drive',
-  'https://www.googleapis.com/auth/drive.file',
-  'https://www.googleapis.com/auth/drive.readonly',
-  'https://www.googleapis.com/auth/spreadsheets',
-  'https://www.googleapis.com/auth/spreadsheets.readonly',
-  'https://www.googleapis.com/auth/documents',
-  'https://www.googleapis.com/auth/documents.readonly',
-  'https://www.googleapis.com/auth/tasks',
-  'https://www.googleapis.com/auth/tasks.readonly',
-  'https://www.googleapis.com/auth/chat.messages',
-  'https://www.googleapis.com/auth/chat.spaces',
-  'https://www.googleapis.com/auth/forms.body',
-  'https://www.googleapis.com/auth/forms.responses.readonly'
-];
-
-scopes.forEach(scope => provider.addScope(scope));
+// Clean provider with standard authentication scopes
+// (Workspace integrations can request extended scopes on-demand without breaking primary login)
+provider.addScope('email');
+provider.addScope('profile');
+provider.setCustomParameters({ prompt: 'select_account' });
 
 let isSigningIn = false;
 let cachedAccessToken: string | null = null;
@@ -40,10 +22,13 @@ export const initAuth = (
 ) => {
   return onAuthStateChanged(auth, async (user: User | null) => {
     if (user) {
-      if (cachedAccessToken) {
-        if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken);
-      } else if (!isSigningIn) {
-        cachedAccessToken = null;
+      const allowedEmails = ['yusufbsitumorang@gmail.com'];
+      if (user.email && allowedEmails.includes(user.email)) {
+        const token = await user.getIdToken();
+        document.cookie = `firebaseToken=${token}; path=/; max-age=86400; SameSite=Lax; Secure`;
+        if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken || token);
+      } else {
+        await auth.signOut();
         if (onAuthFailure) onAuthFailure();
       }
     } else {
@@ -57,18 +42,24 @@ export const googleSignIn = async (): Promise<{ user: User; accessToken: string 
   try {
     isSigningIn = true;
     const result = await signInWithPopup(auth, provider);
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    if (!credential?.accessToken) {
-      throw new Error('Failed to get access token from Firebase Auth');
+    
+    // Private OS Restriction: Only allow specific email
+    const allowedEmails = ['yusufbsitumorang@gmail.com'];
+    if (!result.user.email || !allowedEmails.includes(result.user.email)) {
+      await auth.signOut();
+      throw new Error("Akses ditolak: Alamat email tidak diizinkan masuk ke Private OS.");
     }
 
-    cachedAccessToken = credential.accessToken;
-    
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    if (credential?.accessToken) {
+      cachedAccessToken = credential.accessToken;
+    }
+
     // Set a cookie so the server knows we're logged in.
     const token = await result.user.getIdToken();
-    document.cookie = `firebaseToken=${token}; path=/; max-age=3600; SameSite=Lax; Secure`;
+    document.cookie = `firebaseToken=${token}; path=/; max-age=86400; SameSite=Lax; Secure`;
 
-    return { user: result.user, accessToken: cachedAccessToken };
+    return { user: result.user, accessToken: cachedAccessToken || token };
   } catch (error: any) {
     console.error('Sign in error:', error);
     throw error;

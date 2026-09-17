@@ -29,10 +29,10 @@ export async function refreshNextBestActions(db: Db, ownerId: string) {
   ];
   const active = candidates.filter((c) => !c.reason.startsWith("0 ")).sort((a,b) => b.impact - a.impact || a.effort - b.effort).slice(0,5);
 
-  await db`UPDATE public.next_best_actions SET status='superseded' WHERE owner_id=${ownerId}::uuid AND status NOT IN ('done','completed')`;
+  await db`UPDATE public.next_best_actions SET status='dismissed' WHERE owner_id=${ownerId}::uuid AND status NOT IN ('done')`;
   for (let index=0; index<active.length; index++) {
     const action=active[index];
-    await db`INSERT INTO public.next_best_actions (owner_id, title, reason, impact_score, effort_minutes, priority_rank, status) VALUES (${ownerId}::uuid, ${action.title}, ${action.reason}, ${action.impact}, ${action.effort}, ${index+1}, 'recommended')`;
+    await db`INSERT INTO public.next_best_actions (owner_id, title, reason, impact_score, effort_minutes, priority_rank, status) VALUES (${ownerId}::uuid, ${action.title}, ${action.reason}, ${action.impact}, ${action.effort}, ${index+1}, 'proposed')`;
   }
 
   const capability = clamp((Number(validatedSkills[0]?.count ?? 0) / Math.max(Number(skills[0]?.count ?? 0), 1)) * 100);

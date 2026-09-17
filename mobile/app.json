@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "Yusuf OS",
+    "slug": "yusuf-os",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#090d16"
+      }
+    }
+  }
+}

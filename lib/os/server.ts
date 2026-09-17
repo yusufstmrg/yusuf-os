@@ -10,7 +10,7 @@ export async function requirePrivateDb(): Promise<{ user: { id: string; name?: s
   const result = await auth.getSession();
   const session = result.data?.session;
   const user = result.data?.user;
-  if (!session || !user) redirect("/auth/sign-in");
+  if (!session || !user) redirect("/login");
   const db = getDb();
   if (!db) redirect("/login?reason=database_setup");
   return { user, db };
