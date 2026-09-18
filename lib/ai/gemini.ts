@@ -54,13 +54,15 @@ export async function askChiefOfStaff(
     const formattedContext = contextData ? `\n[Current Context Data: ${JSON.stringify(contextData)}]` : "";
     const fullInput = `${prompt}${formattedContext}`;
 
-    const response = await client.interactions.create({
-      model: "gemini-3.8-flash",
-      input: fullInput,
-      system_instruction: CHIEF_OF_STAFF_SYSTEM_PROMPT,
+    const response = await client.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: fullInput,
+      config: {
+        systemInstruction: CHIEF_OF_STAFF_SYSTEM_PROMPT,
+      },
     });
 
-    return response.output_text || "Tidak ada respons yang dihasilkan oleh model.";
+    return response.text || "Tidak ada respons yang dihasilkan oleh model.";
   } catch (error: any) {
     console.error("Gemini Chief of Staff Error:", error);
     return `Gagal menghubungi AI Chief of Staff: ${error?.message || "Unknown error"}`;
@@ -115,13 +117,15 @@ Respond ONLY with valid JSON conforming to this schema:
 }
 `;
 
-    const response = await client.interactions.create({
-      model: "gemini-3.8-flash",
-      input: prompt,
-      system_instruction: "You are an accurate JSON categorization engine for personal OS. Always output valid JSON only.",
+    const response = await client.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        systemInstruction: "You are an accurate JSON categorization engine for personal OS. Always output valid JSON only.",
+      }
     });
 
-    const text = response.output_text?.trim() || "{}";
+    const text = response.text?.trim() || "{}";
     const cleaned = text.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
     return JSON.parse(cleaned) as QuickCaptureTriage;
   } catch (error) {
