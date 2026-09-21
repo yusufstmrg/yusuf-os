@@ -134,7 +134,7 @@ export function GoogleSignInButton({ redirectUrl = "/os" }: { redirectUrl?: stri
               <AlertCircle size={16} /> Domain Belum Diotorisasi di Firebase Console
             </div>
             <p style={{ margin: "0 0 10px 0" }}>
-              Tambahkan <code>localhost</code> dan <code>127.0.0.1</code> di <b>Authorized domains</b> Firebase Authentication. Atau Anda bisa langsung masuk menggunakan <b>PIN Akses Pemilik</b> di bawah.
+              Tambahkan domain <b>yusuf-platform.vercel.app</b> di <b>Authorized domains</b> Firebase Authentication. Atau Anda bisa langsung masuk menggunakan <b>PIN Akses Pemilik</b> di bawah.
             </p>
             <a
               href="https://console.firebase.google.com/project/gen-lang-client-0612253028/authentication/settings"
@@ -241,10 +241,6 @@ export function GoogleSignInButton({ redirectUrl = "/os" }: { redirectUrl?: stri
             {pinError}
           </div>
         )}
-
-        <div style={{ fontSize: "11px", color: "var(--muted)", lineHeight: 1.5 }}>
-          🔐 Khusus Pemilik: <code>yusufbsitumorang@gmail.com</code>. PIN default: <code>240724</code> (dapat diubah di <code>.env.local</code> melalui <code>OWNER_PIN</code>).
-        </div>
       </form>
     </div>
   );

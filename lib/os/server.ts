@@ -13,5 +13,11 @@ export async function requirePrivateDb(): Promise<{ user: { id: string; name?: s
   if (!session || !user) redirect("/login");
   const db = getDb();
   if (!db) redirect("/login?reason=database_setup");
+  try {
+    await db`SELECT 1`;
+  } catch (err) {
+    console.error("Database connection failed during requirePrivateDb:", err);
+    redirect("/login?reason=database_error");
+  }
   return { user, db };
 }
