@@ -2,6 +2,10 @@
 import { createPool } from '../../src/db/index';
 
 export function getDb(): any {
+  if (!process.env.SQL_HOST) {
+    return null;
+  }
+  
   const pool = createPool();
   return async (strings: TemplateStringsArray, ...values: any[]) => {
     // Construct parameterized query for pg

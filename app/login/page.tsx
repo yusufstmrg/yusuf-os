@@ -23,13 +23,13 @@ export default async function LoginPage({
           <ArrowLeft size={15} /> Back to Yusuf
         </Link>
 
-        {params.reason === "database_error" && (
+        {(params.reason === "database_error" || params.reason === "database_setup") && (
           <div style={{ padding: "16px", marginBottom: "24px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.4)", borderRadius: "12px", color: "#ef4444" }}>
             <h4 style={{ margin: "0 0 8px 0", display: "flex", alignItems: "center", gap: "8px" }}>
               <ShieldCheck size={18} /> Database Connection Failed
             </h4>
             <p style={{ margin: 0, fontSize: "14px" }}>
-              Sistem berhasil mengautentikasi Anda, tetapi koneksi ke <strong>PostgreSQL Database</strong> gagal. <br/>
+              Sistem berhasil mengautentikasi Anda, tetapi koneksi ke <strong>PostgreSQL Database</strong> tidak ditemukan atau gagal. <br/>
               Pastikan Anda telah mengatur Environment Variables (<code>SQL_HOST</code>, dll.) dengan benar di Vercel.
             </p>
           </div>
